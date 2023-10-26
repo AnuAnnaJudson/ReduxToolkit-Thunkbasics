@@ -23,8 +23,8 @@ Install the redux tool kit and redux from react using the following command:-
     4. export as ---> export default slicename.reducer 
     5. import the slices to the store.js and put it in configurestore
  ### To deal with async function we can use Thunk for example fetch data from an API  ### 
- (use axios to do the fetch using get and swnd data using post)
-    use npm i axios to installl the dependency
+  ##### (use axios to do the fetch using get and swnd data using post)use npm i axios to installl the dependency ##### 
+    
     1. Import createThunk from redux-toolkit
     2. create a function fetchPosts using createAsyncThunk
     3. createAsyncThunk accepts 2 arguments a string that depicts the ction it does and the second is an async callback which return a promise
