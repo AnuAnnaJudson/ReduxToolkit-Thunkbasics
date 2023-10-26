@@ -1,7 +1,7 @@
 Install the redux tool kit and redux from react using the following command:-
 *npm install @reduxjs/toolkit react-redux*
 
-to create store:
+###to create store:
     1)import configureStore from redux toolkit
     2)import reducer from slice 
     3) create store as 
@@ -12,7 +12,7 @@ to create store:
         })
     4)make sure to provide the store in index.js
 
-To create a slice:
+###To create a slice:
     1) import createslice from redux toolkit
     2) declare initial state
     3) create slice with 
@@ -23,7 +23,7 @@ To create a slice:
         })
     4) export as ---> export default slicename.reducer 
     5) import the slices to the store.js and put it in configurestore
-To deal with async function we can use Thunk for example fetch data from an API (use axios to do the fetch using get and swnd data using post)
+###To deal with async function we can use Thunk for example fetch data from an API (use axios to do the fetch using get and swnd data using post)
     use npm i axios to installl the dependency
     1) Import createThunk from redux-toolkit
     2) create a function fetchPosts using createAsyncThunk
