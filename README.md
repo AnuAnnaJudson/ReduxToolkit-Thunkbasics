@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+Install the redux tool kit and redux from react using the following command:-
+*npm install @reduxjs/toolkit react-redux*
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+to create store:
+    1)import configureStore from redux toolkit
+    2)import reducer from slice 
+    3) create store as 
+        export const store=configureStore({
+            reducer:{
+                nameForTheReducer: put slice here,
+            }
+        })
+    4)make sure to provide the store in index.js
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To create a slice:
+    1) import createslice from redux toolkit
+    2) declare initial state
+    3) create slice with 
+        const (slicename)=createSlice({
+            name:"some name",
+            initialstate,
+            reducers{}
+        })
+    4) export as ---> export default slicename.reducer 
+    5) import the slices to the store.js and put it in configurestore
+To deal with async function we can use Thunk for example fetch data from an API (use axios to do the fetch using get and swnd data using post)
+    use npm i axios to installl the dependency
+    1) Import createThunk from redux-toolkit
+    2) create a function fetchPosts using createAsyncThunk
+    3) createAsyncThunk accepts 2 arguments a string that depicts the ction it does and the second is an async callback which return a promise
+    4) export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+            try {
+                const response = await axios.get(POSTS_URL); //include await in an async function
+                return [...response.data];
+            } catch (err) {
+                return err.message;
+            }
+        });   
+    5) note that the fecting function happens outside the createSlice function and hence the further actions that
+       happens outside the slice needs to be handled by a extra reducer
+    6) The extra reducer accepts a parameter of the name builder which is an object that handles different cases of a promise  
+    7) Since we fetch data from an api, the initial state looks like:
+        const initialState = {
+            posts: [],// the empty initial state
+            status: "idle", //status of the fetching
+            error: null, //initial state of error
+        };
+    8)  An extra reducer example looks like:
+        extraReducers(builder) {
+            builder
+            .addCase(fetchPosts.pending, (state, action) => { // case for when promise pending
+                state.status = "loading";
+            })
+            .addCase(fetchPosts.fulfilled, (state, action) => { //case fow when promise fullfilled
+                state.status = "succeeded";
+                let min = 1;
+                const loadedPosts = action.payload.map(post => {
+                post.date = sub(new Date(), { minutes: min++ }).toISOString(); //adding feilds which are not fetched from the dummy api
+                post.reactions = {
+                    thumbsUp: 0,
+                    wow: 0,
+                    heart: 0,
+                    rocket: 0,
+                    coffee: 0,
+                }
+                return post;
+                });
+                state.posts = state.posts.concat(loadedPosts);
+            }) 
+            .addCase(fetchPosts.rejected,(state,action)=>{//case when promise rejects
+                state.status='failed'
+                state.error=action.error.message  
+            })
+        },
+    9) An extra reducer comes after the reducer in a slice file    
